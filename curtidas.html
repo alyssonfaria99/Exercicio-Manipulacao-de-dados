@@ -10,7 +10,7 @@
         </p>
         <button id="limpar">Limpar</button>
         <script>
-            let curtidas = [localStorage.getItem('curtidas')]
+            let curtidas = JSON.parse(localStorage.getItem('curtidas')) || [];
             const botaoLimpar = document.getElementById('limpar')
             const botaoCurtir = document.getElementById('curtir')
             const atualizarCurtidas = () => {
@@ -26,14 +26,15 @@
                 let pluralOuSingular = curtidas.length == 3? 'pessoa': 'pessoas'
                 paragrafo.innerText = `${curtidas[0]}, ${curtidas[1]} e mais ${curtidas.length - 2} ${pluralOuSingular} curtiram.`
             }
-            localStorage.setItem('curtidas', curtidas);
+            localStorage.setItem('curtidas', JSON.stringify(curtidas));
         }
 
             botaoCurtir.addEventListener('click', () => {
                 const nome = document.getElementById('nome-curtir').value
-                if ( nome && !curtidas.includes(nome)){
+                if ( nome){
                     curtidas.push(nome)
                 }
+                document.getElementById('nome-curtir').value = ''
                 atualizarCurtidas()
             });
 
@@ -42,6 +43,8 @@
                 curtidas = []
                 atualizarCurtidas();
             })
+
+            atualizarCurtidas()
         </script>
     </body>
 </html>
