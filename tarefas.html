@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <title>Tarefas</title>
+        <style>
+            .tarefa-concluida {
+                text-decoration: line-through;
+            }
+            .tarefa {
+                display: flex;
+                align-items: center;
+                margin-bottom: 8px;
+                max-width: 400px;
+            }
+            .tarefa label {
+                flex: 1; /* Permite que o nome da tarefa ocupe o espaço disponível */
+                margin-left: 8px;
+            }
+            .btn-excluir {
+                margin-left: 16px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Lista de Tarefas</h1>
+        <input type="text" placeholder="Nova Tarefa" id = 'input-tarefa'>
+        <button id = 'btn-adicionar'>Adicionar</button>
+        <p id ='lista-tarefas'>
+        </p>
+        <script>
+            const tarefas = JSON.parse(localStorage.getItem('lista')) || []
+
+            const atualizarParagrafo = () => {
+                const listaTarefas = document.getElementById('lista-tarefas')
+                listaTarefas.innerHTML = ''
+                for ( let tarefa of tarefas){
+                    const tarefaDiv = document.createElement('div')
+                    tarefaDiv.classList.add('tarefa')
+                    const checkbox = document.createElement('input')
+                    const botaoLimpar = document.createElement('button')
+                    botaoLimpar.innerText = 'Excluir Tarefa'
+                    botaoLimpar.style='margin-left: 40px'
+                    checkbox.type='checkbox'
+                    checkbox.checked = tarefa.status
+                    const nomeTarefa = document.createElement('label')
+                    nomeTarefa.innerText = tarefa.descricao
+                    if(tarefa.status){
+                        nomeTarefa.classList.add('tarefa-concluida')
+                    }
+                    tarefaDiv.appendChild(checkbox)
+                    tarefaDiv.appendChild(nomeTarefa)
+                    tarefaDiv.appendChild(botaoLimpar)
+                    listaTarefas.appendChild(tarefaDiv)
+                    let index = tarefas.indexOf(tarefa)
+                    checkbox.addEventListener('change', () => {
+                        alterarStatus(index)
+                    })
+                    botaoLimpar.addEventListener('click', () => {
+                        excluirTarefa(index)
+                    })
+                }
+            }
+
+            const alterarStatus = (index) => {
+                tarefas[index].status = !tarefas[index].status
+                localStorage.setItem('lista', JSON.stringify(tarefas))
+                atualizarParagrafo()
+            }
+
+            const excluirTarefa = (index) => {
+                tarefas.splice(index, 1); // Remove a tarefa do array
+                localStorage.setItem('lista', JSON.stringify(tarefas)); // Atualiza o localStorage
+                atualizarParagrafo();
+            };
+
+            const botaoAdicionar = document.getElementById('btn-adicionar')
+            botaoAdicionar.addEventListener('click', () => {
+                const texto = document.getElementById('input-tarefa').value
+                let novaTarefa = {
+                    descricao: texto,
+                    status: false
+                }
+                tarefas.push(novaTarefa)
+                atualizarParagrafo()
+                localStorage.setItem('lista', JSON.stringify(tarefas))
+                document.getElementById('input-tarefa').value = ''
+            })
+
+            atualizarParagrafo()
+        </script>
+    </body>
+</html>
