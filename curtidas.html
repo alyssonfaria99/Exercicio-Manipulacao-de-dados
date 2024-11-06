@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <title>Curtidas</title>
+    </head>
+    <body>
+        <input type="text" id="nome-curtir" placeholder="Digite seu nome">
+        <button id="curtir">Curtir</button>
+        <p id = 'paragrafo-curtidas'>
+        </p>
+        <button id="limpar">Limpar</button>
+        <script>
+            let curtidas = [localStorage.getItem('curtidas')]
+            const botaoLimpar = document.getElementById('limpar')
+            const botaoCurtir = document.getElementById('curtir')
+            const atualizarCurtidas = () => {
+            const paragrafo = document.getElementById('paragrafo-curtidas')
+            if(curtidas.length == 0){
+                paragrafo.innerText = 'Ninguém curtiu'
+            } else if (curtidas.length == 1){
+                paragrafo.innerText = `${curtidas[0]} curtiu`
+            }
+             else if (curtidas.length == 2){
+                paragrafo.innerText = `${curtidas[0]} e ${curtidas[1]} curtiram`
+            } else {
+                let pluralOuSingular = curtidas.length == 3? 'pessoa': 'pessoas'
+                paragrafo.innerText = `${curtidas[0]}, ${curtidas[1]} e mais ${curtidas.length - 2} ${pluralOuSingular} curtiram.`
+            }
+            localStorage.setItem('curtidas', curtidas);
+        }
+
+            botaoCurtir.addEventListener('click', () => {
+                const nome = document.getElementById('nome-curtir').value
+                if ( nome && !curtidas.includes(nome)){
+                    curtidas.push(nome)
+                }
+                atualizarCurtidas()
+            });
+
+            botaoLimpar.addEventListener('click', ()=> {
+                localStorage.clear();
+                curtidas = []
+                atualizarCurtidas();
+            })
+        </script>
+    </body>
+</html>
